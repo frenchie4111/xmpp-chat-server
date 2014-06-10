@@ -1,0 +1,28 @@
+{
+  "name": "JabberServer",
+  "version": "0.0.1",
+  "description": "Simple Jabber Server with simple buddy list and users built on node-xmpp",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/frenchie4111/JabberServer.git"
+  },
+  "keywords": [
+    "Jabber",
+    "xmpp",
+    "Server",
+    "node"
+  ],
+  "author": "Mike Lyons",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/frenchie4111/JabberServer/issues"
+  },
+  "homepage": "https://github.com/frenchie4111/JabberServer",
+  "dependencies": {
+    "node-xmpp": "^1.0.0-alpha2"
+  }
+}
