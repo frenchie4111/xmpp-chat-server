@@ -97,7 +97,13 @@ Server.prototype._clientConnected = function( client ) {
     } );
 
     client.on( 'presence', function( query ) {
-        // jabberserver.buddylist.sendStatus( client, "test@localhost" )
+        var jid = new xmpp.JID( query.attrs.from.toString() );
+
+        if( jabberserver.userlist[ jid.bare() ] ) {
+            jabberserver.userlist[ jid.bare() ].updatePresence( client );
+        } else {
+            console.log("No user to roster update");
+        }
     } );
 }
 

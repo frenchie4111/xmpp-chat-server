@@ -9,7 +9,12 @@ JabberServer.Server.prototype.getUserList = function() {
     var friend2 = new JabberServer.User( "friend2@localhost", "Friend 2" );
 
     var localhost = new JabberServer.User( "test@localhost", "Test Localhost" );
+    localhost.addBuddy( friend1 );
+    localhost.addBuddy( friend2 );
+
     list.push( localhost );
+    list.push( friend1 );
+    list.push( friend2 );
     return list;
 }
 
