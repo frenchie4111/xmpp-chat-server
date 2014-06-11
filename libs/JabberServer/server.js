@@ -10,13 +10,17 @@ var JABBER_ITEMS = "http://jabber.org/protocol/disco#items"
 var JABBER_ROSTER = "jabber:iq:roster"
 
 function Server( opts ) {
-    console.log("Server");
     this.opts = {};
     if( opts ) this.opts = opts;
     this.base = xmpp.C2SServer;
     this.base( opts );
 
     this.userlist = {};
+    var nonindexedlist = this.getUserList();
+
+    for( var user in nonindexedlist ) {
+        this.userlist[ nonindexedlist[user].getKey() ] = nonindexedlist[user];
+    }
     //this._addConnectionListener(); // For some reason if we add this it get's called twice
 };
 
@@ -27,23 +31,36 @@ Server.prototype._addConnectionListener = function() {
 
     this.on( 'connect', function( client ) {
         console.log("connect")
-        self.clientConnected( client )
+        self._clientConnected( client )
     });
 }
 
-Server.prototype.clientConnected = function( client ) {
+Server.prototype._getOnlineUsers = function() {
+    var onlineusers = []
+    for( var user in this.userlist ) {
+        if( user.online ) {
+            onlineusers.push( user );
+        }
+    }
+}
+
+Server.prototype._clientConnected = function( client ) {
     var jabberserver = this
+    this.client = client;
 
     client.on('authenticate', function( opts, cb ) {
-        // jabberserver.userlist[opts.jid] = new User( opts.jid, opts.jid );
-        // console.log("Adding user " + jabberserver.userlist);
-        console.log( "Authenticate" );
+        if( jabberserver.userlist[ opts.jid.bare() ] != null ) {
+            console.log( "opts.jid.bare " + opts.jid.bare() );
+            var auth_success = jabberserver.userlist[ opts.jid.bare() ].authenticate( opts );
+            console.log( "Auth success: " + auth_success );
 
-        cb(false, opts); // Always authenticate successfully
+            cb(!auth_success, opts);
+        } else {
+            cb(true, opts); // Always authenticate successfully
+        }
     });
 
     client.on( 'stanza', function( stanza ) {
-        console.log("stanza");
         if( stanza.getChild('query') ) {
             this.emit( 'query', stanza );
         } else if( stanza.getName() == "presence" ) {
@@ -69,20 +86,23 @@ Server.prototype.clientConnected = function( client ) {
         parent.c( "account", { type: "registered" } );
     } );
 
-    client.on( JABBER_ITEMS, function( query, parent ) {
-        // noop
-    } );
-
     client.on( JABBER_ROSTER, function( query, parent ) {
-        // jabberserver.buddylist.sendRoster( parent )
-        console.log("rost query " + query)
-        jabberserver.userlist[ query.attr.from ].updateFriends( parent, jabberserver.userlist )
+        var jid = new xmpp.JID( query.attrs.from.toString() );
+
+        if( jabberserver.userlist[ jid.bare() ] ) {
+            jabberserver.userlist[ jid.bare() ].updateFriends( parent )
+        } else {
+            console.log("No user to roster update");
+        }
     } );
 
     client.on( 'presence', function( query ) {
-        console.log("presence")
         // jabberserver.buddylist.sendStatus( client, "test@localhost" )
     } );
+}
+
+Server.prototype.getUserList = function() {
+    return {};
 }
 
 module.exports = Server;
