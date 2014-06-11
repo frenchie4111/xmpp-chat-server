@@ -65,6 +65,8 @@ Server.prototype._clientConnected = function( client ) {
             this.emit( 'query', stanza );
         } else if( stanza.getName() == "presence" ) {
             this.emit( 'presence', stanza );
+        } else if( stanza.getName() == "message" ) {
+            this.emit( 'message', stanza );
         } else {
             console.log("Stanza Not Identified " + stanza);
         }
@@ -76,7 +78,7 @@ Server.prototype._clientConnected = function( client ) {
                                           from:       query.attrs.to,
                                           to:         query.attrs.from,
                                           id:         query.attrs.id } )
-                        .c( "query", { xmlns: type } )
+                             .c( "query", { xmlns: type } )
 
         this.emit( type, query, result )
         client.send( result )
@@ -105,6 +107,14 @@ Server.prototype._clientConnected = function( client ) {
             console.log("No user to roster update");
         }
     } );
+
+    client.on( 'message', function( query ) {
+        var jid = new xmpp.JID( query.attrs.to.toString() );
+
+        if( jabberserver.userlist[ jid.bare() ] ) {
+            jabberserver.userlist[ jid.bare() ].onRecieveMessage( client, query );
+        }
+    });
 }
 
 Server.prototype.getUserList = function() {

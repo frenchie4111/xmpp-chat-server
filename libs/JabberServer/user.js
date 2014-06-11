@@ -28,6 +28,16 @@ User.prototype.onRecieveMessage = function( client, message ) {
     console.log("On Recieve Message");
 };
 
+User.prototype.sendMessage = function( client, to, message ) {
+    var item = new xmpp.Element( 'message', { to: to,
+                                              from: this.jid.toString(),
+                                              type: "chat",
+                                              id: "JabberServer" } )
+                      .c("body").t( message );
+     console.log( item );
+     client.send( item );
+}
+
 User.prototype.updateFriends = function( parent ) {
     console.log("Update Friends");
 
