@@ -1,7 +1,8 @@
-var User = require( "./libs/JabberServer/user" ),
-    BuddyList = require( "./libs/JabberServer/buddylist" ),
-    Server = require( "./libs/JabberServer/server" )
+'use strict';
 
-exports.User = User
-exports.BuddyList = BuddyList
-exports.Server = Server
+
+module.exports = {
+    User: require( "./libs/JabberServer/user" ),
+    BuddyList: require( "./libs/JabberServer/buddylist" ),
+    Server: require( "./libs/JabberServer/server" )
+}

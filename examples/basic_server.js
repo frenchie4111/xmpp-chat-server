@@ -2,4 +2,4 @@
 
 var JabberServer = require( "../index" )
 
-server = new Server;
+var server = new JabberServer.Server( { domain: "localhost", port: 5223, tls: false } );
