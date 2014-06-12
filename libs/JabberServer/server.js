@@ -120,7 +120,7 @@ Server.prototype._clientConnected = function( client ) {
         var jid = new xmpp.JID( query.attrs.to.toString() );
 
         if( jabberserver.userlist[ jid.bare() ] ) {
-            jabberserver.userlist[ jid.bare() ].onRecieveMessage( client, query );
+            jabberserver.userlist[ jid.bare() ].sendMessageToStream( query );
         }
     });
 }
