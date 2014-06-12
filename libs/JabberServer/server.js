@@ -16,19 +16,20 @@ function Server( opts ) {
     this.base( opts );
 
     this.userlist = {};
-    var nonindexedlist = this.getUserList();
+    var nonindexedlist = this.initUserList();
 
     for( var user in nonindexedlist ) {
         this.userlist[ nonindexedlist[user].getKey() ] = nonindexedlist[user];
+        nonindexedlist[user].messageCallback = this.sendMessage.bind( this )
     }
     //this._addConnectionListener(); // For some reason if we add this it get's called twice
 };
 
-Server.prototype = new xmpp.C2SServer;
+util.inherits( Server, xmpp.C2SServer );
 
 Server.prototype._addConnectionListener = function() {
     var self = this;
-
+    console.log("_addConnectionListener");
     this.on( 'connect', function( client ) {
         console.log("connect")
         self._clientConnected( client )
@@ -46,18 +47,21 @@ Server.prototype._getOnlineUsers = function() {
 
 Server.prototype._clientConnected = function( client ) {
     var jabberserver = this
-    this.client = client;
 
     client.on('authenticate', function( opts, cb ) {
         if( jabberserver.userlist[ opts.jid.bare() ] != null ) {
-            console.log( "opts.jid.bare " + opts.jid.bare() );
             var auth_success = jabberserver.userlist[ opts.jid.bare() ].authenticate( opts );
-            console.log( "Auth success: " + auth_success );
 
             cb(!auth_success, opts);
         } else {
-            cb(true, opts); // Always authenticate successfully
+            console.log( "User " + opts.jid.bare() + " not found" );
+            cb(true, opts);
         }
+    });
+
+    client.on('auth-success', function( jid ) {
+        jabberserver.userlist[ jid.bare() ].stream = client;
+        // jabberserver.userlist[ jid.bare() ].messageCallback = this.sendMessage
     });
 
     client.on( 'stanza', function( stanza ) {
@@ -83,6 +87,10 @@ Server.prototype._clientConnected = function( client ) {
         this.emit( type, query, result )
         client.send( result )
     });
+
+    client.on( JABBER_ITEMS, function( query, parent ) {
+        parent.c( "account", { type: "registered" } );
+    } );
 
     client.on( JABBER_INFO, function( query, parent ) {
         parent.c( "account", { type: "registered" } );
@@ -117,8 +125,18 @@ Server.prototype._clientConnected = function( client ) {
     });
 }
 
-Server.prototype.getUserList = function() {
+Server.prototype.sendMessage = function( to, from, message ) {
+    if( this.userlist[ to.bare() ] && this.userlist[ from.bare() ] ) {
+        this.userlist[ to.bare() ].sendMessageTo( this.userlist[ from.bare() ], message );
+    }
+}
+
+Server.prototype.initUserList = function() {
     return {};
+}
+
+Server.prototype.addUser = function( user ) {
+    this.userlist[ user.getKey() ] = user;
 }
 
 module.exports = Server;

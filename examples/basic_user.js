@@ -1,0 +1,45 @@
+var xmpp = require( 'node-xmpp' );
+var argv = process.argv
+
+if (argv.length !== 4) {
+    console.error(
+        'Usage: node echo_bot.js <my-jid> <my-password>'
+    )
+    process.exit(1)
+}
+
+var client = new xmpp.Client({
+    jid: argv[2],
+    password: argv[3],
+    port: 5223,
+    disallowTLS: true
+})
+
+client.on('online', function() {
+    console.log('online')
+    client.send(new xmpp.Element('presence', { })
+      .c('show').t('chat').up()
+      .c('status').t('Happily echoing your <message/> stanzas')
+    )
+})
+
+client.on('stanza', function(stanza) {
+    if (stanza.is('message') &&
+      // Important: never reply to errors!
+      (stanza.attrs.type !== 'error')) {
+        // Swap addresses...
+        stanza.attrs.to = stanza.attrs.from
+        delete stanza.attrs.from
+        // and send back
+        console.log('Sending response: ' + stanza.root().toString())
+        client.send(stanza)
+    }
+})
+
+client.on('error', function(e) {
+    console.error(e)
+})
+
+client.on('offline', function() {
+    console.log("offline");
+})
