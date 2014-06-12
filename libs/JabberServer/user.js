@@ -25,16 +25,14 @@ User.prototype.authenticate = function( opts ) {
     return true;
 }
 
-User.prototype.onRecieveMessage = function( client, message ) {
-    console.log("Default on Recieve Message " + message + " this " + this.jid.bare() );
+User.prototype.onRecieveMessage = function( message ) {
 };
 
 User.prototype.sendMessageFrom = function( to, message ) {
-    this.messageCallback( to, this.jid, message )
+    this.messageCallback( to, this.jid, message );
 };
 
 User.prototype.sendMessageTo = function( from, message ) {
-    util.debug( "sendMessageTo" );
     var item = new xmpp.Element( 'message', { to: this.jid.toString(),
                                               from: from.jid.toString(),
                                               type: "chat",
@@ -44,7 +42,10 @@ User.prototype.sendMessageTo = function( from, message ) {
 };
 
 User.prototype.sendMessageToStream = function( query ) {
-    this.stream.send( query );
+    this.onRecieveMessage( query );
+    if( this.stream != null ) {
+        this.stream.send( query );
+    }
 }
 
 User.prototype.updateFriends = function( parent ) {

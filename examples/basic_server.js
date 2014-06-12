@@ -7,13 +7,13 @@ JabberServer.Server.prototype.initUserList = function() {
 
     var echo_friend = new JabberServer.User( "echo@localhost", "Echo 1" );
 
-    echo_friend.onRecieveMessage = function( client, message ) {
+    echo_friend.onRecieveMessage = function( message ) {
         if( message.getChild("body") ) {
             echo_friend.sendMessageFrom( new JabberServer.JID( message.attrs.from ), message.getChild("body").getText() );
         }
     }
 
-    var friend2 = new JabberServer.User( "friend1@localhost", "Friend 2" );
+    var friend2 = new JabberServer.User( "friend1@localhost", "Friend 1" );
 
     var localhost = new JabberServer.User( "test@localhost", "Test Localhost" );
     localhost.addBuddy( echo_friend );
