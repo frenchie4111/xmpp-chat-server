@@ -33,18 +33,32 @@ User.prototype.sendMessageFrom = function( to, message ) {
 };
 
 User.prototype.sendMessageTo = function( from, message ) {
-    var item = new xmpp.Element( 'message', { to: this.jid.toString(),
-                                              from: from.jid.toString(),
+    console.log("Test");
+    var item = new xmpp.Element( 'message', { to: to.jid.getUser() + "@" + to.jid.getDomain(), // Strip out resource
+                                              from: from.jid.getUser() + "@" + from.jid.getDomain(),
                                               type: "chat",
                                               id: "JabberServer" } )
                       .c("body").t( message );
+    console.log( "Stream" + item );
     this.stream.send( item );
 };
 
 User.prototype.sendMessageToStream = function( query ) {
-    this.onRecieveMessage( query );
+    var item = query;
+
+    if( query.getChild( "body" ) ) {
+        var message = query.getChild( "body" ).getText();
+        var from = new xmpp.JID( query.attrs.from.toString() );
+
+        item = new xmpp.Element( 'message', { to: this.jid.getUser() + "@" + this.jid.getDomain(), // Strip out resource
+                                              from: from.getUser() + "@" + from.getDomain(),
+                                              type: "chat",
+                                              id: "JabberServer" } )
+                       .c("body").t( message );
+    }
+    this.onRecieveMessage( item );
     if( this.stream != null ) {
-        this.stream.send( query );
+        this.stream.send( item );
     }
 }
 

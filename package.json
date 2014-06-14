@@ -1,6 +1,6 @@
 {
   "name": "jabber-server",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Simple Jabber Server with simple buddy list and users built on node-xmpp",
   "main": "index.js",
   "scripts": {
