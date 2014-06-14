@@ -27,4 +27,4 @@ JabberServer.Server.prototype.initUserList = function() {
     return list;
 }
 
-var server = new JabberServer.Server( { domain: "localhost", port: 5223, tls: false } );
+var server = new JabberServer.Server( { domain: "10.0.0.16", port: 5223, tls: false } );

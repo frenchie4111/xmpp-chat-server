@@ -48,6 +48,13 @@ Server.prototype._getOnlineUsers = function() {
 Server.prototype._clientConnected = function( client ) {
     var jabberserver = this
 
+    client.on('register', function( opts, cb ) {
+        var user = new User( opts.jid.toString(), opts.jid.toString() );
+        jabberserver.addUser( user );
+
+        this.emit( 'registration-success', user );
+    });
+
     client.on('authenticate', function( opts, cb ) {
         if( jabberserver.userlist[ opts.jid.bare() ] != null ) {
             var auth_success = jabberserver.userlist[ opts.jid.bare() ].authenticate( opts );
