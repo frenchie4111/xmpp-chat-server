@@ -1,15 +1,17 @@
 'use strict';
 
 var BuddyList = require( './buddylist' ),
-    xmpp = require( 'node-xmpp' ),
-    util = require('util')
+    xmpp = require( 'node-xmpp-server' ),
+    util = require('util'),
+    Element = require( "node-xmpp-core" ).ltx.Element,
+    JID = require( "node-xmpp-core" ).JID
 
 function User( jid, name ) {
     this.buddylist = new BuddyList;
 
     this.online = true;
     this.status = "Available"
-    this.jid = new xmpp.JID( jid );
+    this.jid = new JID( jid );
     this.name = name;
 }
 
@@ -34,7 +36,7 @@ User.prototype.sendMessageFrom = function( to, message ) {
 
 User.prototype.sendMessageTo = function( from, message ) {
     console.log("Test");
-    var item = new xmpp.Element( 'message', { to: to.jid.getUser() + "@" + to.jid.getDomain(), // Strip out resource
+    var item = new Element( 'message', { to: to.jid.getUser() + "@" + to.jid.getDomain(), // Strip out resource
                                               from: from.jid.getUser() + "@" + from.jid.getDomain(),
                                               type: "chat",
                                               id: "JabberServer" } )
@@ -48,9 +50,9 @@ User.prototype.sendMessageToStream = function( query ) {
 
     if( query.getChild( "body" ) ) {
         var message = query.getChild( "body" ).getText();
-        var from = new xmpp.JID( query.attrs.from.toString() );
+        var from = new JID( query.attrs.from.toString() );
 
-        item = new xmpp.Element( 'message', { to: this.jid.getUser() + "@" + this.jid.getDomain(), // Strip out resource
+        item = new Element( 'message', { to: this.jid.getUser() + "@" + this.jid.getDomain(), // Strip out resource
                                               from: from.getUser() + "@" + from.getDomain(),
                                               type: "chat",
                                               id: "JabberServer" } )
@@ -76,7 +78,7 @@ User.prototype.updatePresence = function( client ) {
 
 User.prototype.sendPresenceTo = function( client, to ) {
     if( this.online == true ) {
-        var presence = new xmpp.Element( 'presence', { from:this.jid , to:to.jid } )
+        var presence = new Element( 'presence', { from:this.jid , to:to.jid } )
                                .c( "status" ).t( this.status );
         client.send( presence );
     }

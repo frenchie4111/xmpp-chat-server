@@ -1,9 +1,11 @@
 'use strict';
 
-var xmpp = require("node-xmpp"),
+var xmpp = require("node-xmpp-server"),
     User = require("./user"),
     EventEmitter = require( "events" ).EventEmitter,
-    util = require( "util" )
+    util = require( "util" ),
+    Element = require( "node-xmpp-core" ).ltx.Element,
+    JID = require( "node-xmpp-core" ).JID
 
 var JABBER_INFO = "http://jabber.org/protocol/disco#info"
 var JABBER_ITEMS = "http://jabber.org/protocol/disco#items"
@@ -85,7 +87,7 @@ Server.prototype._clientConnected = function( client ) {
 
     client.on( 'query', function( query ) {
         var type = query.getChild('query').attrs.xmlns
-        var result = new xmpp.Element( 'iq', { type:       'result',
+        var result = new Element( 'iq', { type:       'result',
                                           from:       query.attrs.to,
                                           to:         query.attrs.from,
                                           id:         query.attrs.id } )
@@ -104,7 +106,7 @@ Server.prototype._clientConnected = function( client ) {
     } );
 
     client.on( JABBER_ROSTER, function( query, parent ) {
-        var jid = new xmpp.JID( query.attrs.from.toString() );
+        var jid = new JID( query.attrs.from.toString() );
 
         if( jabberserver.userlist[ jid.bare() ] ) {
             jabberserver.userlist[ jid.bare() ].updateFriends( parent )
@@ -114,7 +116,7 @@ Server.prototype._clientConnected = function( client ) {
     } );
 
     client.on( 'presence', function( query ) {
-        var jid = new xmpp.JID( query.attrs.from.toString() );
+        var jid = new JID( query.attrs.from.toString() );
 
         if( jabberserver.userlist[ jid.bare() ] ) {
             jabberserver.userlist[ jid.bare() ].updatePresence( client );
@@ -124,7 +126,7 @@ Server.prototype._clientConnected = function( client ) {
     } );
 
     client.on( 'message', function( query ) {
-        var jid = new xmpp.JID( query.attrs.to.toString() );
+        var jid = new JID( query.attrs.to.toString() );
 
         if( jabberserver.userlist[ jid.bare() ] ) {
             jabberserver.userlist[ jid.bare() ].sendMessageToStream( query );
