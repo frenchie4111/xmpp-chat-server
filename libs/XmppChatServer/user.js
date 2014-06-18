@@ -45,6 +45,12 @@ User.prototype.sendMessageTo = function( from, message ) {
     this.stream.send( item );
 };
 
+User.prototype.sendElementToStream = function( element ) {
+    if( this.stream != null ) {
+        this.stream.send( item );
+    }
+};
+
 User.prototype.sendMessageToStream = function( query ) {
     var item = query;
 
@@ -59,10 +65,14 @@ User.prototype.sendMessageToStream = function( query ) {
                        .c("body").t( message );
     }
     this.onRecieveMessage( item );
-    if( this.stream != null ) {
-        this.stream.send( item );
-    }
-}
+    this.sendElementToStream( item );
+};
+
+User.prototype.sendShutdownToStream = function() {
+    item = new Element( "stream:error" )
+    .c("system-shutdown", { "xmlns": "urn:ietf:params:xml:ns:xmpp-streams" });
+    this.sendElementToStream( item );
+};
 
 User.prototype.updateFriends = function( parent ) {
     this.buddylist.addBuddiesToXml( parent )

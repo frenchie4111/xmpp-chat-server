@@ -24,6 +24,12 @@ function Server( opts ) {
         this.userlist[ nonindexedlist[user].getKey() ] = nonindexedlist[user];
         nonindexedlist[user].messageCallback = this.sendMessage.bind( this )
     }
+
+    this.on( 'shutdown', function() {
+        this.userlist.forEach( function( user ) {
+            user.sendShutdownToStream();
+        } );
+    } );
     //this._addConnectionListener(); // For some reason if we add this it get's called twice
 };
 

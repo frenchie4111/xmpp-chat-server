@@ -15,7 +15,7 @@ JabberServer.Server.prototype.initUserList = function() {
 
     var friend2 = new JabberServer.User( "friend1@localhost", "Friend 1" );
 
-    var localhost = new JabberServer.User( "test@localhost", "Test Localhost" );
+    var localhost = new JabberServer.User( "main@clever", "Test Localhost" );
     localhost.addBuddy( echo_friend );
     localhost.addBuddy( friend2 );
 

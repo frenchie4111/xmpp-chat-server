@@ -2,8 +2,8 @@
 
 
 module.exports = {
-    User: require( "./libs/JabberServer/user" ),
-    BuddyList: require( "./libs/JabberServer/buddylist" ),
-    Server: require( "./libs/JabberServer/server" ),
+    User: require( "./libs/XmppChatServer/user" ),
+    BuddyList: require( "./libs/XmppChatServer/buddylist" ),
+    Server: require( "./libs/XmppChatServer/server" ),
     JID: require( "node-xmpp-core" ).JID
 }
