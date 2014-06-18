@@ -1,2 +1,2 @@
-Jabber Server
-=============
+Xmpp Chat Server
+================
