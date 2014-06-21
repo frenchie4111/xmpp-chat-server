@@ -80,12 +80,14 @@ Server.prototype._clientConnected = function( client ) {
     });
 
     client.on( 'stanza', function( stanza ) {
-        if( stanza.getChild('query') ) {
+        if( stanza.getChild('query') ) { // Info query
             this.emit( 'query', stanza );
-        } else if( stanza.getName() == "presence" ) {
+        } else if( stanza.getName() == "presence" ) { // Presence
             this.emit( 'presence', stanza );
-        } else if( stanza.getName() == "message" ) {
+        } else if( stanza.getName() == "message" ) { // Message
             this.emit( 'message', stanza );
+        } else if( stanza.getChild( 'ping' ) != null ) {
+            this.emit( 'ping', stanza );
         } else {
             console.log("Stanza Not Identified " + stanza);
         }
@@ -138,6 +140,14 @@ Server.prototype._clientConnected = function( client ) {
             jabberserver.userlist[ jid.bare() ].sendMessageToStream( query );
         }
     });
+
+    client.on( 'ping', function( query ) {
+        var jid = new JID( query.attrs.from.toString() );
+
+        if( jabberserver.userlist[ jid.bare() ] ) {
+            jabberserver.userlist[ jid.bare() ].respondToPing( query );
+        }
+    } );
 }
 
 Server.prototype.sendMessage = function( to, from, message ) {

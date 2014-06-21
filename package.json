@@ -1,6 +1,6 @@
 {
   "name": "xmpp-chat-server",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Simple Xmpp Chat Server with simple buddy list and users built on node-xmpp",
   "main": "index.js",
   "scripts": {

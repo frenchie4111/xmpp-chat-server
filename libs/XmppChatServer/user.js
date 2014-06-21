@@ -94,6 +94,8 @@ User.prototype.sendPresenceTo = function( client, to ) {
     }
 };
 
-// User.prototype.on
+User.prototype.respondToPing = function( ping ) {
+    var ping_response = new Element( "iq", { to: ping.attrs.from, id: ping.attrs.id, type: "result" } );
+}
 
 module.exports = User;
