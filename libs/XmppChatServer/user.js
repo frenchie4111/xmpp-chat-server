@@ -47,7 +47,7 @@ User.prototype.sendMessageTo = function( from, message ) {
 
 User.prototype.sendElementToStream = function( element ) {
     if( this.stream != null ) {
-        this.stream.send( item );
+        this.stream.send( element );
     }
 };
 
