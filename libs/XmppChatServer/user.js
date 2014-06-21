@@ -69,7 +69,7 @@ User.prototype.sendMessageToStream = function( query ) {
 };
 
 User.prototype.sendShutdownToStream = function() {
-    item = new Element( "stream:error" )
+    var item = new Element( "stream:error" )
     .c("system-shutdown", { "xmlns": "urn:ietf:params:xml:ns:xmpp-streams" });
     this.sendElementToStream( item );
 };
@@ -96,6 +96,7 @@ User.prototype.sendPresenceTo = function( client, to ) {
 
 User.prototype.respondToPing = function( ping ) {
     var ping_response = new Element( "iq", { to: ping.attrs.from, id: ping.attrs.id, type: "result" } );
+    this.sendElementToStream( ping_response );
 }
 
 module.exports = User;

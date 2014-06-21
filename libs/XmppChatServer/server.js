@@ -26,9 +26,9 @@ function Server( opts ) {
     }
 
     this.on( 'shutdown', function() {
-        this.userlist.forEach( function( user ) {
-            user.sendShutdownToStream();
-        } );
+        for( var user in this.userlist ) {
+            this.userlist[ user ].sendShutdownToStream();
+        }
     } );
     //this._addConnectionListener(); // For some reason if we add this it get's called twice
 };
