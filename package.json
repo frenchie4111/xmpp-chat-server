@@ -4,7 +4,7 @@
   "description": "Simple Xmpp Chat Server with simple buddy list and users built on node-xmpp",
   "main": "index.js",
   "scripts": {
-    "test": "expresso test/*"
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
