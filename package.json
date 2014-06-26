@@ -25,5 +25,8 @@
   "dependencies": {
     "node-xmpp-core": "^1.0.0-alpha2",
     "node-xmpp-server": "^1.0.0-alpha3"
+  },
+  "devDependencies": {
+    "mocha": "*"
   }
 }

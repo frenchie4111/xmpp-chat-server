@@ -1,5 +1,7 @@
 var assert = require( 'assert' );
 
 describe( 'Server', function() {
-    assert.equal( 1, 1 );
+    it( 'should smoke test', function() {
+        assert.equal( 1, 1 );
+    } );
 } );
