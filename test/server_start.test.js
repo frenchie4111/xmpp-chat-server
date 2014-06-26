@@ -2,7 +2,7 @@ var assert = require( 'assert' ),
     ip = require('ip'),
     xmpp_chat = require( '../index' );
 
-describe( 'Server', function() {
+describe( 'Server startup and shutdown', function() {
     it( 'should start on localhost', function( done ) {
         var server = new xmpp_chat.Server(
             {

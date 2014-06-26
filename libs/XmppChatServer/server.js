@@ -86,6 +86,7 @@ Server.prototype._clientConnected = function( client ) {
     });
 
     client.on( 'stanza', function( stanza ) {
+        console.log( "onStanza" );
         if( stanza.getChild('query') ) { // Info query
             this.emit( 'query', stanza );
         } else if( stanza.getName() == "presence" ) { // Presence
