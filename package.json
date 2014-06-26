@@ -27,6 +27,8 @@
     "node-xmpp-server": "^1.0.0-alpha3"
   },
   "devDependencies": {
-    "mocha": "*"
+    "node-xmpp": "*",
+    "mocha": "*",
+    "ip": "*"
   }
 }

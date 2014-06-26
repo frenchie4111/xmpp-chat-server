@@ -11,7 +11,7 @@ var JABBER_INFO = "http://jabber.org/protocol/disco#info"
 var JABBER_ITEMS = "http://jabber.org/protocol/disco#items"
 var JABBER_ROSTER = "jabber:iq:roster"
 
-function Server( opts ) {
+function Server( opts, callback ) {
     this.opts = {};
     if( opts ) this.opts = opts;
     this.base = xmpp.C2SServer;
@@ -25,10 +25,16 @@ function Server( opts ) {
         nonindexedlist[user].messageCallback = this.sendMessage.bind( this )
     }
 
+    this.on( 'online', function() {
+        if( callback )
+            callback();
+    } );
+
     this.on( 'shutdown', function() {
         for( var user in this.userlist ) {
             this.userlist[ user ].sendShutdownToStream();
         }
+        this.emit( this, 'shutdown' );
     } );
     //this._addConnectionListener(); // For some reason if we add this it get's called twice
 };
